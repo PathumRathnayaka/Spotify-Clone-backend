@@ -1,8 +1,12 @@
 import express from "express";
 
 const router = express.Router();
-router.get("/", (req, res) => {
-  res.send("auth route with GET method");
+router.post("/callback", async (req, res) => {
+  try {
+    const {id, firstName, lastName, imageUrl} = req.body;
+  } catch (error) {
+    
+  }
 });
 
 export default router;
