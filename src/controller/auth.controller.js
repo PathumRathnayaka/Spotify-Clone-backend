@@ -1,3 +1,5 @@
+import { User } from "../models/user.model.js";
+
 export const authCallBack = async (req, res) => {
     try {
       const {id, firstName, lastName, imageUrl} = req.body;
@@ -11,8 +13,9 @@ export const authCallBack = async (req, res) => {
             });
       }
   
-      res.status(200).json({message: "User created successfully"});
+      res.status(200).json({succsess: true});
     } catch (error) {
       console.log("Error in auth callback route",error);
+      next(error);
     }
   }
