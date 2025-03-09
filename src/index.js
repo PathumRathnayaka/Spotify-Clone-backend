@@ -8,6 +8,9 @@ import songRoutes from "./routes/song.route.js"
 import albumsRoutes from "./routes/albums.route.js"
 import statusRoutes from "./routes/status.route.js"
 import { connectDB } from "./lib/db.js";
+import path from "path";
+import fileUpload from "express-fileupload";
+
 
 
 dotenv.config();
