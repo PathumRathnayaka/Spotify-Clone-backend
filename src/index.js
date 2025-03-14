@@ -10,6 +10,7 @@ import statusRoutes from "./routes/status.route.js"
 import { connectDB } from "./lib/db.js";
 import path from "path";
 import fileUpload from "express-fileupload";
+import cors from "cors";
 
 
 
@@ -17,6 +18,11 @@ dotenv.config();
 const __dirname = path.resolve();
 const app = express();
 const port = process.env.PORT;
+app.use(cors(
+  {
+    origin: "http://localhost:3000",
+    credentials: true}
+));
 
 app.use(express.json())
 app.use(clerkMiddleware());
