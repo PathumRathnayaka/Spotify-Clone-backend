@@ -6,7 +6,7 @@ import authRoutes from "./routes/auth.route.js"
 import adminRoutes from "./routes/admin.route.js"
 import songRoutes from "./routes/song.route.js"
 import albumsRoutes from "./routes/albums.route.js"
-import statusRoutes from "./routes/status.route.js"
+import statusRoutes from "./routes/stat.route.js"
 import { connectDB } from "./lib/db.js";
 import path from "path";
 import fileUpload from "express-fileupload";
@@ -38,9 +38,9 @@ app.use(fileUpload({
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/song", songRoutes);
+app.use("/api/songs", songRoutes);
 app.use("/api/albums", albumsRoutes);
-app.use("/api/status", statusRoutes);
+app.use("/api/stats", statusRoutes);
 
 //error handler
 app.use((err, req, res, next) => {
