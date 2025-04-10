@@ -13,6 +13,8 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+}, {
+  timestamps: true // This will automatically add createdAt and updatedAt fields
 });
 
 export const Message = mongoose.model("Message", messageSchema);
