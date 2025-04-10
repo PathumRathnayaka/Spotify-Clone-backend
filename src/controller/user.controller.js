@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import { Message } from "../models/message.model.js";
 
 export const getAllUsers = async(req, res, next) => {
     try {
@@ -24,6 +25,7 @@ export const getMessages = async (req, res, next) => {
 
 		res.status(200).json(messages);
 	} catch (error) {
+		console.error("Error fetching messages:", error);
 		next(error);
 	}
 };
