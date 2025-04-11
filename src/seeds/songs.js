@@ -6,36 +6,36 @@ config();
 
 const songs = [
 	{
-		title: "Stay With Me",
-		artist: "Sarah Mitchell",
+		title: "Levitating",
+		artist: "Dua Lipa",
 		imageUrl: "/cover-images/1.jpg",
 		audioUrl: "/songs/1.mp3",
 		duration: 46, // 0:46
 	},
 	{
-		title: "Midnight Drive",
-		artist: "The Wanderers",
+		title: "Lovely",
+		artist: "billie eilish",
 		imageUrl: "/cover-images/2.jpg",
 		audioUrl: "/songs/2.mp3",
 		duration: 41, // 0:41
 	},
 	{
-		title: "Lost in Tokyo",
-		artist: "Electric Dreams",
+		title: "Happier Than Ever",
+		artist: "billie eilish",
 		imageUrl: "/cover-images/3.jpg",
 		audioUrl: "/songs/3.mp3",
 		duration: 24, // 0:24
 	},
 	{
-		title: "Summer Daze",
-		artist: "Coastal Kids",
+		title: "Night Changes",
+		artist: "One Direction",
 		imageUrl: "/cover-images/4.jpg",
 		audioUrl: "/songs/4.mp3",
 		duration: 24, // 0:24
 	},
 	{
-		title: "Neon Lights",
-		artist: "Night Runners",
+		title: "Side to Side",
+		artist: "Ariana Grande",
 		imageUrl: "/cover-images/5.jpg",
 		audioUrl: "/songs/5.mp3",
 		duration: 36, // 0:36
@@ -48,8 +48,8 @@ const songs = [
 		duration: 40, // 0:40
 	},
 	{
-		title: "City Rain",
-		artist: "Urban Echo",
+		title: "New Rules",
+		artist: "Dua Lipa",
 		imageUrl: "/cover-images/7.jpg",
 		audioUrl: "/songs/7.mp3",
 		duration: 39, // 0:39
@@ -62,15 +62,15 @@ const songs = [
 		duration: 28, // 0:28
 	},
 	{
-		title: "Ocean Waves",
-		artist: "Coastal Drift",
+		title: "Sin Pijama",
+		artist: "Becky G",
 		imageUrl: "/cover-images/9.jpg",
 		audioUrl: "/songs/9.mp3",
 		duration: 28, // 0:28
 	},
 	{
-		title: "Starlight",
-		artist: "Luna Bay",
+		title: "7 Rings",
+		artist: "Ariana Grande",
 		imageUrl: "/cover-images/10.jpg",
 		audioUrl: "/songs/10.mp3",
 		duration: 30, // 0:30
@@ -83,36 +83,36 @@ const songs = [
 		duration: 29, // 0:29
 	},
 	{
-		title: "Purple Sunset",
-		artist: "Dream Valley",
+		title: "Dollar",
+		artist: "Becky G",
 		imageUrl: "/cover-images/12.jpg",
 		audioUrl: "/songs/12.mp3",
 		duration: 17, // 0:17
 	},
 	{
-		title: "Neon Dreams",
-		artist: "Cyber Pulse",
+		title: "Mad Love",
+		artist: "Becky G",
 		imageUrl: "/cover-images/13.jpg",
 		audioUrl: "/songs/13.mp3",
 		duration: 39, // 0:39
 	},
 	{
-		title: "Moonlight Dance",
-		artist: "Silver Shadows",
+		title: "Mala santa",
+		artist: "Becky G",
 		imageUrl: "/cover-images/14.jpg",
 		audioUrl: "/songs/14.mp3",
 		duration: 27, // 0:27
 	},
 	{
-		title: "Urban Jungle",
-		artist: "City Lights",
+		title: "Die with a smile",
+		artist: "Lady Gaga",
 		imageUrl: "/cover-images/15.jpg",
 		audioUrl: "/songs/15.mp3",
 		duration: 36, // 0:36
 	},
 	{
-		title: "Crystal Rain",
-		artist: "Echo Valley",
+		title: "See you again",
+		artist: "Wiz Khalifa",
 		imageUrl: "/cover-images/16.jpg",
 		audioUrl: "/songs/16.mp3",
 		duration: 39, // 0:39
