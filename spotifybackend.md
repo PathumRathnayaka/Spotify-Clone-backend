@@ -60,6 +60,7 @@ src/models/user.model.js
 src/routes/admin.route.js
 src/routes/albums.route.js
 src/routes/auth.route.js
+src/routes/health.route.js
 src/routes/song.route.js
 src/routes/stat.route.js
 src/routes/user.route.js
@@ -76,46 +77,6 @@ vercel.json
 # Example:
 # *.log
 # tmp/
-````
-
-## File: repomix.config.json
-````json
-{
-  "output": {
-    "filePath": "spotifybackend.md",
-    "style": "markdown",
-    "parsableStyle": false,
-    "fileSummary": true,
-    "directoryStructure": true,
-    "removeComments": false,
-    "removeEmptyLines": false,
-    "compress": false,
-    "topFilesLength": 5,
-    "showLineNumbers": false,
-    "copyToClipboard": false,
-    "git": {
-      "sortByChanges": true,
-      "sortByChangesMaxCommits": 100
-    }
-  },
-  "include": [],
-  "ignore": {
-    "useGitignore": true,
-    "useDefaultPatterns": true,
-    "customPatterns": []
-  },
-  "security": {
-    "enableSecurityCheck": true
-  },
-  "tokenCount": {
-    "encoding": "o200k_base"
-  }
-}
-````
-
-## File: vercel.json
-````json
-
 ````
 
 ## File: LICENSE
@@ -191,6 +152,41 @@ git clone https://github.com/YourUsername/Spotify-Clone-frontend.git
 cd Spotify-Clone-frontend
 npm install
 npm run dev
+````
+
+## File: repomix.config.json
+````json
+{
+  "output": {
+    "filePath": "spotifybackend.md",
+    "style": "markdown",
+    "parsableStyle": false,
+    "fileSummary": true,
+    "directoryStructure": true,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "compress": false,
+    "topFilesLength": 5,
+    "showLineNumbers": false,
+    "copyToClipboard": false,
+    "git": {
+      "sortByChanges": true,
+      "sortByChangesMaxCommits": 100
+    }
+  },
+  "include": [],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": []
+  },
+  "security": {
+    "enableSecurityCheck": true
+  },
+  "tokenCount": {
+    "encoding": "o200k_base"
+  }
+}
 ````
 
 ## File: src/controller/album.controller.js
@@ -403,83 +399,6 @@ cloudinary.config({
 export default cloudinary
 ````
 
-## File: src/lib/socket.js
-````javascript
-import { Server } from "socket.io";
-import { Message } from "../models/message.model.js";
-
-export const initializeSocket = (server) => {
-	const io = new Server(server, {
-		cors: {
-			origin: "http://localhost:3000",
-			credentials: true,
-		},
-	});
-
-	const userSockets = new Map(); // { userId: socketId}
-	const userActivities = new Map(); // {userId: activity}
-
-	io.on("connection", (socket) => {
-		socket.on("user_connected", (userId) => {
-			userSockets.set(userId, socket.id);
-			userActivities.set(userId, "Idle");
-
-			// broadcast to all connected sockets that this user just logged in
-			io.emit("user_connected", userId);
-
-			socket.emit("users_online", Array.from(userSockets.keys()));
-
-			io.emit("activities", Array.from(userActivities.entries()));
-		});
-
-		socket.on("update_activity", ({ userId, activity }) => {
-			console.log("activity updated", userId, activity);
-			userActivities.set(userId, activity);
-			io.emit("activity_updated", { userId, activity });
-		});
-
-		socket.on("send_message", async (data) => {
-			try {
-				const { senderId, receiverId, content } = data;
-
-				const message = await Message.create({
-					senderId,
-					receiverId,
-					content,
-				});
-
-				// send to receiver in realtime, if they're online
-				const receiverSocketId = userSockets.get(receiverId);
-				if (receiverSocketId) {
-					io.to(receiverSocketId).emit("receive_message", message);
-				}
-
-				socket.emit("message_sent", message);
-			} catch (error) {
-				console.error("Message error:", error);
-				socket.emit("message_error", error.message);
-			}
-		});
-
-		socket.on("disconnect", () => {
-			let disconnectedUserId;
-			for (const [userId, socketId] of userSockets.entries()) {
-				// find disconnected user
-				if (socketId === socket.id) {
-					disconnectedUserId = userId;
-					userSockets.delete(userId);
-					userActivities.delete(userId);
-					break;
-				}
-			}
-			if (disconnectedUserId) {
-				io.emit("user_disconnected", disconnectedUserId);
-			}
-		});
-	});
-};
-````
-
 ## File: src/models/album.model.js
 ````javascript
 import mongoose from "mongoose";
@@ -494,6 +413,19 @@ const albumSchema = new mongoose.Schema(
     },{ timeseries: true});
 
 export const Album = mongoose.model("Album",albumSchema);
+````
+
+## File: src/routes/health.route.js
+````javascript
+import express from "express";
+
+const router = express.Router();
+
+router.get("/", (req, res) => {
+    res.status(200).json({ status: "ok", message: "Server is healthy 🚀" });
+});
+
+export default router;
 ````
 
 ## File: src/routes/stat.route.js
@@ -514,24 +446,6 @@ node_modules/
 
 # Environment variable files
 .env
-````
-
-## File: src/lib/db.js
-````javascript
-import mongoose from 'mongoose';
-
-export const connectDB = async () => {
-    console.log("Attempting to connect to MongoDB..."); // Debug log
-    console.log("MongoDB URL:", process.env.MONGODB_URL);
-    try{
-        const conn = await mongoose.connect(process.env.MONGODB_URL);
-        console.log(`connected to mongodb ${conn.connection.host}`);
-    }catch(error){
-       console.log("Failed to connect to mongodb",error);
-       process.exit(1);
-    }
-    
-  };
 ````
 
 ## File: src/middleware/auth.middleware.js
@@ -1024,37 +938,23 @@ const seedSongs = async () => {
 seedSongs();
 ````
 
-## File: package.json
+## File: vercel.json
 ````json
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon src/index.js",
-    "seed:songs": "node src/seeds/songs.js",
-    "seed:albums": "node src/seeds/albums.js"
-  },
-  "keywords": [],
-  "type": "module",
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@clerk/express": "^1.3.50",
-    "cloudinary": "^2.5.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-fileupload": "^1.5.1",
-    "mongoose": "^8.12.0",
-    "node-cron": "^3.0.3",
-    "socket.io": "^4.8.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
+    "version": 2,
+    "builds": [
+      {
+        "src": "src/index.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "src/index.js"
+      }
+    ]
   }
-}
 ````
 
 ## File: src/controller/auth.controller.js
@@ -1086,6 +986,102 @@ export const authCallBack = async (req, res, next) => {
   }
 ````
 
+## File: src/lib/db.js
+````javascript
+import mongoose from 'mongoose';
+
+export const connectDB = async () => {
+    console.log("Attempting to connect to MongoDB..."); // Debug log
+    console.log("MongoDB URL:", process.env.MONGODB_URL);
+    try{
+        const conn = await mongoose.connect(process.env.MONGODB_URL);
+        console.log("MongoDB connected ✅");
+        console.log(`connected to mongodb ${conn.connection.host}`);
+    }catch(error){
+       console.log("Failed to connect to mongodb",error);
+       process.exit(1);
+    }
+    
+  };
+````
+
+## File: src/lib/socket.js
+````javascript
+import { Server } from "socket.io";
+import { Message } from "../models/message.model.js";
+
+export const initializeSocket = (server) => {
+	const io = new Server(server, {
+		cors: {
+			origin: ["http://localhost:3000","https://spotifyremake.vercel.app"],
+			credentials: true,
+		},
+	});
+
+	const userSockets = new Map(); // { userId: socketId}
+	const userActivities = new Map(); // {userId: activity}
+
+	io.on("connection", (socket) => {
+		socket.on("user_connected", (userId) => {
+			userSockets.set(userId, socket.id);
+			userActivities.set(userId, "Idle");
+
+			// broadcast to all connected sockets that this user just logged in
+			io.emit("user_connected", userId);
+
+			socket.emit("users_online", Array.from(userSockets.keys()));
+
+			io.emit("activities", Array.from(userActivities.entries()));
+		});
+
+		socket.on("update_activity", ({ userId, activity }) => {
+			console.log("activity updated", userId, activity);
+			userActivities.set(userId, activity);
+			io.emit("activity_updated", { userId, activity });
+		});
+
+		socket.on("send_message", async (data) => {
+			try {
+				const { senderId, receiverId, content } = data;
+
+				const message = await Message.create({
+					senderId,
+					receiverId,
+					content,
+				});
+
+				// send to receiver in realtime, if they're online
+				const receiverSocketId = userSockets.get(receiverId);
+				if (receiverSocketId) {
+					io.to(receiverSocketId).emit("receive_message", message);
+				}
+
+				socket.emit("message_sent", message);
+			} catch (error) {
+				console.error("Message error:", error);
+				socket.emit("message_error", error.message);
+			}
+		});
+
+		socket.on("disconnect", () => {
+			let disconnectedUserId;
+			for (const [userId, socketId] of userSockets.entries()) {
+				// find disconnected user
+				if (socketId === socket.id) {
+					disconnectedUserId = userId;
+					userSockets.delete(userId);
+					userActivities.delete(userId);
+					break;
+				}
+			}
+			if (disconnectedUserId) {
+				io.emit("user_disconnected", disconnectedUserId);
+			}
+		});
+	});
+};
+````
+
 ## File: src/routes/user.route.js
 ````javascript
 import { Router } from "express";
@@ -1096,6 +1092,39 @@ const router = Router();
 router.get("/",protectRoute, getAllUsers);
 router.get("/messages/:userId",protectRoute, getMessages);
 export default router
+````
+
+## File: package.json
+````json
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "seed:songs": "node src/seeds/songs.js",
+    "seed:albums": "node src/seeds/albums.js"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@clerk/express": "^1.3.50",
+    "cloudinary": "^2.5.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.1",
+    "mongoose": "^8.12.0",
+    "node-cron": "^3.0.3",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
 ````
 
 ## File: src/controller/user.controller.js
@@ -1314,6 +1343,7 @@ import adminRoutes from "./routes/admin.route.js"
 import songRoutes from "./routes/song.route.js"
 import albumsRoutes from "./routes/albums.route.js"
 import statusRoutes from "./routes/stat.route.js"
+import healthRoutes from "./routes/health.route.js";
 import { connectDB } from "./lib/db.js";
 import path from "path";
 import fileUpload from "express-fileupload";
@@ -1334,7 +1364,7 @@ initializeSocket(httpServer);
 
 app.use(cors(
   {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000","https://spotifyremake.vercel.app"],
     credentials: true}
 ));
 
@@ -1348,6 +1378,8 @@ app.use(fileUpload({
     fileSize: 10 * 1024 * 1024 //10mb max file size
   },
 }))
+
+app.use("/api/health", healthRoutes);
 
 //cron job to delete temporary files
 // cron jobs
@@ -1387,8 +1419,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message})
 })
 
-httpServer.listen(port, () => {
-  console.log("Server is running on port "+port);
-  connectDB();
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    httpServer.listen(port, () => {
+      console.log("Server is running on port " + port);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+  }
+};
+
+startServer();
 ````
