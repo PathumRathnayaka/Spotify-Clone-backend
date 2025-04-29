@@ -83,7 +83,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({message: process.env.NODE_ENV === "production" ? "Internal server error" : err.message})
 })
 
-httpServer.listen(port, () => {
-  console.log("Server is running on port "+port);
-  connectDB();
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    httpServer.listen(port, () => {
+      console.log("Server is running on port " + port);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+  }
+};
+
+startServer();
