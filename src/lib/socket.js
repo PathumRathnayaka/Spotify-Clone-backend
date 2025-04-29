@@ -4,10 +4,11 @@ import { Message } from "../models/message.model.js";
 export const initializeSocket = (server) => {
 	const io = new Server(server, {
 		cors: {
-			origin: ["https://spotifyremake.vercel.app", "http://localhost:3000"],
-			credentials: true,
+		  origin: ["https://spotifyremake.vercel.app"],
+		  credentials: true
 		},
-	});
+		path: "/socket.io" // Must match frontend
+	  });
 
 	const userSockets = new Map(); // { userId: socketId}
 	const userActivities = new Map(); // {userId: activity}
